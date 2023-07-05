@@ -1,7 +1,5 @@
 # Renewed-Banking 2.0.0
-<a href='https://ko-fi.com/ushifty' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
- 
- [Renewed Discord](https://discord.gg/P3RMrbwA8n)
+[Renewed Discord](https://discord.gg/P3RMrbwA8n)
 
 # Project Description
 This resource is created & maintained by uShifty#1733 and was not a fork of any of the other banking resources.
