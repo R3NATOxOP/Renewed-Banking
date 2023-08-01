@@ -1,15 +1,10 @@
 lib.locale()
 Config = {
     framework = 'qb', -- QB and ESX preconfigured edit the framework.lua to add functionality to other frameworks
-    renewedMultiJob = false, -- QBCORE ONLY! https://github.com/Renewed-Scripts/qb-phone  
+    renewedMultiJob = false, -- QBCORE ONLY! https://github.com/Renewed-Scripts/qb-phone
     progressbar = 'circle', -- circle or rectangle (Anything other than circle will default to rectangle)
-    currency ='USD', -- USD, EUR, GBP ect.....
-    atms = {
-        `prop_atm_01`,
-        `prop_atm_02`,
-        `prop_atm_03`,
-        `prop_fleeca_atm`
-    },
+    currency = 'USD', -- USD, EUR, GBP ect.....
+    TargetSupport = 'qb', -- 'qb' and 'ox' Support Target!
     peds = {
         [1] = { -- Pacific Standard
             model = 'u_m_m_bankman',
@@ -45,5 +40,11 @@ Config = {
             coords = vector4(-112.22, 6471.01, 31.63, 134.18),
             createAccounts = true
         }
+    },
+    atms = {
+        `prop_atm_01`,
+        `prop_atm_02`,
+        `prop_atm_03`,
+        `prop_fleeca_atm`
     }
 }

@@ -1,5 +1,6 @@
 local cachedAccounts = {}
 local cachedPlayers = {}
+lib.locale()
 
 CreateThread(function()
     Wait(500)
