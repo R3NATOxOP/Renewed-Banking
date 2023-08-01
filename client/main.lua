@@ -1,6 +1,8 @@
 local isVisible = false
 local progressBar = Config.progressbar == 'circle' and lib.progressCircle or lib.progressBar
 PlayerPed = cache.ped
+local SupportTarget = Config.TargetSupport
+lib.locale()
 
 lib.onCache('ped', function(newPed)
 	PlayerPed = newPed
@@ -74,6 +76,7 @@ CreateThread(function ()
             cb(newTransaction)
         end)
     end
+if ( SupportTarget == 'ox' ) then
     exports.ox_target:addModel(Config.atms, {{
         name = 'renewed_banking_openui',
         event = 'Renewed-Banking:client:openBankUI',
@@ -84,6 +87,29 @@ CreateThread(function ()
             return distance < 2.5
         end
     }})
+elseif ( SupportTarget == 'qb' ) then
+    local models = {
+        `prop_atm_01`,
+        `prop_atm_02`,
+        `prop_atm_03`,
+        `prop_fleeca_atm`
+      }
+      exports['qb-target']:AddTargetModel(models, {
+        options = {
+          {
+            num = 1,
+            type = "client",
+            event = 'Renewed-Banking:client:openBankUI',
+            icon = 'fas fa-money-check',
+            label = locale('view_bank'),
+            canInteract = function(_, distance)
+                return distance < 2.5
+            end
+          }
+        },
+        distance = 2.5,
+      })
+end
 end)
 
 local pedSpawned = false
@@ -116,7 +142,7 @@ function CreatePeds()
         AddTextComponentString('Bank')
         EndTextCommandSetBlipName(blips[k])
     end
-
+if ( SupportTarget == 'ox' ) then
     local targetOpts ={{
         name = 'renewed_banking_openui',
         event = 'Renewed-Banking:client:openBankUI',
@@ -138,8 +164,40 @@ function CreatePeds()
             return distance < 4.5
         end
     }
-    exports.ox_target:addLocalEntity(peds.adv, targetOpts)
+    exports.ox_target:addLocalEntity(peds.basic, targetOpts)
     pedSpawned = true
+
+    --QB Code Target
+elseif ( SupportTarget == 'qb' ) then
+   local models = {
+    'u_m_m_bankman',
+    'ig_barry',
+  }
+  local models2 = {
+    'u_m_m_bankman',
+  }
+  exports['qb-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
+      { -- This is the first table with options, you can make as many options inside the options table as you want
+      event = 'Renewed-Banking:client:openBankUI',
+      icon = 'fas fa-money-check',
+      label = locale('view_bank'),
+      }
+    },
+    distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
+  })
+  exports['qb-target']:AddTargetModel(models2, { -- This defines the models, can be a string or a table
+  options = { -- This is your options table, in this table all the options will be specified for the target to accept
+    { -- This is the first table with options, you can make as many options inside the options table as you want
+    event = 'Renewed-Banking:client:accountManagmentMenu',
+    icon = 'fas fa-money-check',
+    label = locale('manage_bank'),
+    }
+  },
+  distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
+})
+    pedSpawned = true
+end
 end
 
 function DeletePeds()
@@ -156,10 +214,18 @@ function DeletePeds()
 end
 
 AddEventHandler('onResourceStop', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-    exports.ox_target:removeModel(Config.atms, {'renewed_banking_openui'})
-    exports.ox_target:removeEntity(peds.basic, {'renewed_banking_openui'})
-    exports.ox_target:removeEntity(peds.adv, {'renewed_banking_openui','renewed_banking_accountmng'})
+if resource ~= GetCurrentResourceName() then return end
+    if ( SupportTarget == 'ox' ) then
+        exports.ox_target:removeModel(Config.atms, {'renewed_banking_openui'})
+        exports.ox_target:removeEntity(peds.basic, {'renewed_banking_openui'})
+        exports.ox_target:removeEntity(peds.adv, {'renewed_banking_openui','renewed_banking_accountmng'})
+    elseif ( SupportTarget == 'qb' ) then
+        if GetCurrentResourceName() ~= resource then return end
+        exports['qb-target']:RemoveTargetModel(Config.atms, 'renewed_banking_openui')
+        exports['qb-target']:RemoveTargetEntity(peds.basic, 'renewed_banking_openui')
+        exports['qb-target']:RemoveTargetEntity(peds.adv, {'renewed_banking_openui', 'renewed_banking_accountmng'})
+        DeletePeds()
+    end
     DeletePeds()
 end)
 
